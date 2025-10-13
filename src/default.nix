@@ -62,7 +62,7 @@ in
 
                     fi
 
-                    time nix-store --add-root $STATE/current -r ${usercfg.package}
+                    nix-store --add-root $STATE/current -r ${usercfg.package}
                   '';
                 in "${script}";
               };
