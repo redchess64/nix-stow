@@ -1,0 +1,1 @@
+{nixosModules.default = ./src;}
