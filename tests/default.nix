@@ -2,7 +2,7 @@
 pkgs.testers.runNixOSTest {
   name = "nix-stow-test";
   nodes.machine = {...}: {
-    imports = [../src];
+    imports = [../module.nix];
     users.users.test = {
       isNormalUser = true;
     };

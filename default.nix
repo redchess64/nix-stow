@@ -1,1 +1,1 @@
-{nixosModules.default = ./src;}
+{nixosModules.default = ./module.nix;}

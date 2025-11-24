@@ -32,10 +32,6 @@ in
 
               wantedBy = ["multi-user.target"];
 
-              # Should make it so nix-store invocations don't wait for the daemon
-              after = ["nix-daemon.service"];
-              requires = ["nix-daemon.service"];
-
               serviceConfig = {
                 User = name;
                 Type = "oneshot";
@@ -62,7 +58,7 @@ in
 
                     fi
 
-                    nix-store --add-root $STATE/current -r ${usercfg.package}
+                    ln -sT ${usercfg.package} $STATE/current
                   '';
                 in "${script}";
               };
