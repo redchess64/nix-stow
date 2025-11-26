@@ -40,29 +40,30 @@ in
 
                 ExecStart = let
                   home = config.users.users.${name}.home;
-                  script = pkgs.writeScript "nix-stow-activate-${name}" ''
-                    #!${pkgs.runtimeShell} -el
+                  script =
+                    pkgs.writeScript "nix-stow-activate-${name}" /* bash */ ''
+                      #!${pkgs.runtimeShell} -el
 
-                    PATH=${cfg.package}/bin:$PATH
-                    STATE=''${XDG_STATE_HOME:=${home}/.local/state}/nix-stow
+                      PATH=${cfg.package}/bin:$PATH
+                      STATE=''${XDG_STATE_HOME:=${home}/.local/state}/nix-stow
 
-                    [[ -d $STATE ]] || mkdir -p $STATE
+                      [[ -d $STATE ]] || mkdir -p $STATE
 
-                    if [[ -L $STATE/current ]]; then
-                      OLD=$(realpath $STATE/current)
-                      [[ $OLD -ef ${usercfg.package} ]] && exit 0
-                      stow --no-folding -d $(dirname $OLD) -D $(basename $OLD) -S $(basename ${usercfg.package}) -t ${home}
-                      ln -sT ${usercfg.package} $STATE/current -f
+                      if [[ -L $STATE/current ]]; then
+                        OLD=$(realpath $STATE/current)
+                        [[ $OLD -ef ${usercfg.package} ]] && exit 0
+                        stow --no-folding -d $(dirname $OLD) -D $(basename $OLD) -S $(basename ${usercfg.package}) -t ${home}
+                        ln -sT ${usercfg.package} $STATE/current -f
 
-                    elif [ -e $STATE/current ]; then
-                      echo "$STATE/current exists and is not a symlink"
-                      return 0
-                    else
-                      stow --no-folding -d $(dirname ${usercfg.package}) $(basename ${usercfg.package}) -t ${home}
-                      ln -sT ${usercfg.package} $STATE/current
-                    fi
+                      elif [ -e $STATE/current ]; then
+                        echo "$STATE/current exists and is not a symlink"
+                        return 0
+                      else
+                        stow --no-folding -d $(dirname ${usercfg.package}) $(basename ${usercfg.package}) -t ${home}
+                        ln -sT ${usercfg.package} $STATE/current
+                      fi
 
-                  '';
+                    '';
                 in "${script}";
               };
             }
