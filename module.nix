@@ -57,7 +57,7 @@ in
 
                       elif [ -e $STATE/current ]; then
                         echo "$STATE/current exists and is not a symlink"
-                        return 0
+                        exit 1
                       else
                         stow --no-folding -d $(dirname ${usercfg.package}) $(basename ${usercfg.package}) -t ${home}
                         ln -sT ${usercfg.package} $STATE/current
