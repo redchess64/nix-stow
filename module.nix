@@ -49,20 +49,25 @@ in
 
                       [[ -d $STATE ]] || mkdir -p $STATE
 
-                      if [[ -L $STATE/current ]]; then
-                        OLD=$(realpath $STATE/current)
-                        [[ $OLD -ef ${usercfg.package} ]] && exit 0
-                        stow --no-folding -d $(dirname $OLD) -D $(basename $OLD) -S $(basename ${usercfg.package}) -t ${home}
-                        ln -sT ${usercfg.package} $STATE/current -f
+                      cd $STATE
 
-                      elif [ -e $STATE/current ]; then
-                        echo "$STATE/current exists and is not a symlink"
-                        exit 1
-                      else
-                        stow --no-folding -d $(dirname ${usercfg.package}) $(basename ${usercfg.package}) -t ${home}
-                        ln -sT ${usercfg.package} $STATE/current
+                      if ! [[ -e current ]] then
+                        ln -sT /var/empty 0
+                        ln -sT /var/empty 1
+                        ln -sT 1 current
                       fi
 
+                      OLD=$(readlink current)
+                      NEW=$(( ! OLD ))
+
+                      if [[ -L current  ]] then
+                        ln -sT ${usercfg.package} $NEW -f
+                        stow -d ./. -t ${home} -S $NEW -D $OLD
+                        ln -sT $NEW current -f
+                      else
+                        echo "$STATE/current exists and is not a symbolic link"
+                        exit 1
+                      fi
                     '';
                 in "${script}";
               };
