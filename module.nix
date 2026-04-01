@@ -1,3 +1,5 @@
+# Confirmed functional on nixpkgs commit provided by ./npins
+
 {
   pkgs,
   lib,

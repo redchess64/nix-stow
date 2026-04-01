@@ -1,4 +1,7 @@
-{pkgs ? import <nixpkgs> {}}:
+{
+  system ? builtins.currentSystem,
+  pkgs ? import (import ../npins).nixpkgs {inherit system;}
+}:
 pkgs.testers.runNixOSTest {
   name = "nix-stow-test";
   nodes.machine = {...}: {
